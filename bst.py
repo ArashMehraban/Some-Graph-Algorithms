@@ -32,6 +32,7 @@ class BST:
 	def show(self):
 		if(self.root!=None):
 			self._show(self.root)
+		print()
 	
 	def _show(self, cur):
 		if(cur!=None):
