@@ -34,11 +34,31 @@ class Trie:
 			cur = cur.children[char]
 		return True
 
+	def remove(self, word):
+		cur = self.root
+		for char in word:
+			if char not in cur.children:
+				print('Word does not exist!')
+				return
+			cur = cur.children[char]
+		if cur.end_of_word == False:
+			print('Word does not exist!')
+			return
+		else:
+			cur.end_of_word = False
+
+                
+
 if __name__ == "__main__":
 	trie = Trie()
 	trie.insert('Apple')
 	trie.insert('Appleii')
-	print(trie.search('Apple'))
-	print(trie.search('App'))
-	print(trie.search('Appleii'))
-	print(trie.starts_with('App'))
+	print(trie.search('Apple'))     #True
+	print(trie.search('App'))       #False
+	print(trie.search('Appleii'))   #True
+	print(trie.starts_with('App'))  #True
+	print(trie.starts_with('bob'))  #False
+	trie.remove('Apb')              #Word does not exist
+	trie.remove('Apple')            #<-- Apple gets removed
+	trie.remove('Apple')            #Word does not exist
+
