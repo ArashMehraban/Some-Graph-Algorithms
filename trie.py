@@ -15,7 +15,7 @@ class Trie:
 			cur = cur.children[char]
 		cur.end_of_word = True
 				
-	def search(self, word):
+	def exists(self, word):
 		cur = self.root
 		for char in word:
 			if char not in cur.children:
@@ -51,14 +51,14 @@ class Trie:
 
 if __name__ == "__main__":
 	trie = Trie()
-	trie.insert('Apple')
-	trie.insert('Appleii')
-	print(trie.search('Apple'))     #True
-	print(trie.search('App'))       #False
-	print(trie.search('Appleii'))   #True
-	print(trie.starts_with('App'))  #True
-	print(trie.starts_with('bob'))  #False
-	trie.remove('Apb')              #Word does not exist
-	trie.remove('Apple')            #<-- Apple gets removed
-	trie.remove('Apple')            #Word does not exist
+	trie.insert('Apple')            # Apple is added to trie
+	trie.insert('Appleii')          # Apple is added to trie
+	print(trie.exists('Apple'))     # True
+	print(trie.exists('App'))       # False
+	print(trie.exists('Appleii'))   # True
+	print(trie.starts_with('App'))  # True
+	print(trie.starts_with('bob'))  # False
+	trie.remove('Apb')              # Word does not exist
+	trie.remove('Apple')            # <-- Apple gets removed from trie
+	trie.remove('Apple')            # Word does not exist
 
