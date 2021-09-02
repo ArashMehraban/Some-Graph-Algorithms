@@ -1,12 +1,12 @@
 class Graph:
-    def __init__(self,edges=None,direction='undirected'):
+    def __init__(self,edges,direction='undirected'):
         self.adj = self._edge2adj(edges,direction)        
         
     def _edge2adj(self,edges,direction):
         # Converts a list of graph edeges to an adjacency list.
         # It defaults to 'undirected' graph:
         # ['A', 'B'] means 'A' --> 'B' and 'B' --> 'A'
-        # Optional input 'dir' or 'directed' creates an adjacency list
+        # Optional input 'directed': creates an adjacency list
         # assuming edge direction from left to right:
         # ['A', 'B'] means 'A' --> 'B'
         if edges == None:
@@ -79,8 +79,8 @@ if __name__ == "__main__":
                 ['M','D']]
 
     print('undirected Graph:\n')
-    dfs = Graph(edgeList)
-    path, parents, trav_time = dfs.dfs('A')
+    graph = Graph(edgeList)
+    path, parents, trav_time = graph.dfs('A')
     print(path)
     # ['A', 'B', 'F', 'M', 'G', 'I', 'D', 'J', 'H', 'N', 'E', 'C', 'L', 'K']
     
@@ -98,8 +98,8 @@ if __name__ == "__main__":
     print()
     print('directed Graph:\n')
 
-    dfs = Graph(edgeList,direction='directed')
-    path, parents, trav_time = dfs.dfs('A')
+    graph = Graph(edgeList,direction='directed')
+    path, parents, trav_time = graph.dfs('A')
     print(path)
     # ['A', 'B', 'F', 'M', 'D', 'I', 'G', 'J', 'H', 'C', 'L', 'K', 'E', 'N']
     
@@ -113,4 +113,3 @@ if __name__ == "__main__":
     # {'A': [0, 27], 'B': [1, 26], 'M': [3, 8], 'F': [2, 15], 'C': [16, 25],
     #  'L': [17, 18], 'K': [19, 20], 'E': [21, 24], 'N': [22, 23], 'H': [12, 13],
     #  'G': [9, 14], 'I': [5, 6], 'D': [4, 7], 'J': [10, 11]}
-    
