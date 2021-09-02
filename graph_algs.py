@@ -27,7 +27,9 @@ class Graph:
                         adj[item[1]].append(item[0])        
             return adj
 
-    def dfs(self,u):        
+    def dfs(self,u):
+        global time # To be used with trav_time
+        time = 0
         color = {} # W (White): Not visited, G (Grey): Partially visited, B (Black): visited 
         parents = {}
         trav_time = {} # [start, end]
@@ -37,8 +39,6 @@ class Graph:
             parents[node] = None
             trav_time[node] = [-1, -1]
         path = []
-        global time
-        time = 0
         self._dfs(u,color,parents,trav_time,path)
         return path, parents, trav_time        
 
@@ -51,7 +51,7 @@ class Graph:
         for v in self.adj[u]:
             if color[v] == 'W':
                 parents[v] = u
-                self._dfs(v,color,parents,trav_time, path)
+                self._dfs(v,color,parents,trav_time,path)
         color[u] = 'B'
         trav_time[u][1] = time #end time
         time += 1
@@ -78,38 +78,37 @@ if __name__ == "__main__":
                 ['G','M'],
                 ['M','D']]
 
-    print('undirected Graph:\n')
+    print('undirected graph:')
     graph = Graph(edgeList)
     path, parents, trav_time = graph.dfs('A')
-    print(path)
+    print('path:\n', path)
     # ['A', 'B', 'F', 'M', 'G', 'I', 'D', 'J', 'H', 'N', 'E', 'C', 'L', 'K']
     
-    print(parents)
+    print('parents:\n',parents)
     # {'A': None, 'B': 'A', 'M': 'F', 'F': 'B',
     #  'C': 'E', 'L': 'C', 'K': 'C', 'E': 'N',
     #  'N': 'H', 'H': 'G', 'G': 'M', 'I': 'G',
     #  'D': 'I', 'J': 'G'}
 
-    print(trav_time)
+    print('trav_time:\n',trav_time)
     # {'A': [0, 27], 'B': [1, 26], 'M': [3, 24], 'F': [2, 25], 'C': [14, 19],
     #  'L': [15, 16], 'K': [17, 18], 'E': [13, 20], 'N': [12, 21], 'H': [11, 22],
     #  'G': [4, 23], 'I': [5, 8], 'D': [6, 7], 'J': [9, 10]}
     
-    print()
-    print('directed Graph:\n')
+    print('\ndirected graph:')
 
     graph = Graph(edgeList,direction='directed')
     path, parents, trav_time = graph.dfs('A')
-    print(path)
+    print('path:\n', path)
     # ['A', 'B', 'F', 'M', 'D', 'I', 'G', 'J', 'H', 'C', 'L', 'K', 'E', 'N']
     
-    print(parents)
+    print('parents:\n',parents)
     # {'A': None, 'B': 'A', 'M': 'F', 'F': 'B',
     #  'C': 'B', 'L': 'C', 'K': 'C', 'E': 'C',
     #  'N': 'E', 'H': 'G', 'G': 'F', 'I': 'D',
     #  'D': 'M', 'J': 'G'}
 
-    print(trav_time)
+    print('trav_time:\n',trav_time)
     # {'A': [0, 27], 'B': [1, 26], 'M': [3, 8], 'F': [2, 15], 'C': [16, 25],
     #  'L': [17, 18], 'K': [19, 20], 'E': [21, 24], 'N': [22, 23], 'H': [12, 13],
     #  'G': [9, 14], 'I': [5, 6], 'D': [4, 7], 'J': [10, 11]}
