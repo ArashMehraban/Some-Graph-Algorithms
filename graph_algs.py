@@ -1,9 +1,10 @@
+from queue import Queue
 class Graph:
     def __init__(self,edges,direction='undirected'):
         self.adj = self._edge2adj(edges,direction)        
         
     def _edge2adj(self,edges,direction):
-        # Converts a list of graph edeges to an adjacency list.
+        # Converts a list of Graph edeges to an adjacency list.
         # It defaults to 'undirected' graph:
         # ['A', 'B'] means 'A' --> 'B' and 'B' --> 'A'
         # Optional input 'directed': creates an adjacency list
@@ -28,12 +29,13 @@ class Graph:
             return adj
 
     def dfs(self,u):
-        global time # To be used with trav_time
+        global time # used with trav_time
         time = 0
         color = {} # W (White): Not visited, G (Grey): Partially visited, B (Black): visited 
         parents = {}
         trav_time = {} # [start, end]
         path = []
+        # initialize nodes, parents and trav_time
         for node in self.adj:
             color[node] = 'W'
             parents[node] = None
@@ -53,8 +55,45 @@ class Graph:
                 parents[v] = u
                 self._dfs(v,color,parents,trav_time,path)
         color[u] = 'B'
-        trav_time[u][1] = time #end time
+        trav_time[u][1] = time # end time
         time += 1
+
+    def bfs(self,u):
+        visited = {}
+        level = {} # distance
+        parents = {}
+        output = []
+        q = Queue()
+        # initialize nodes, parents and trav_time
+        for node in self.adj:
+            visited[node] = False
+            parents[node] = None
+            level[node] = -1
+        # set values for the given Node: u
+        visited[u] = True
+        level[u] = 0
+        q.put(u)
+        #bfs
+        while not q.empty():
+            u = q.get() # pop the queue
+            output.append(u)
+            # explore all adjacent nodes of u
+            for v in self.adj[u]:
+                if not visited[v]:
+                    visited[v] = True
+                    parents[v] = u
+                    level[v] = level[u] +1
+                    q.put(v)
+        return output, parents, level
+
+    def distance(self,u,v):
+        output, parents, level = self.bfs(u)
+        path_size = level[v]
+        path = []
+        while v is not None:
+            path.append(v)
+            v = parents[v]
+        return path_size, path[::-1] # reverse the path list      
         
 
 if __name__ == "__main__":
@@ -78,6 +117,7 @@ if __name__ == "__main__":
                 ['G','M'],
                 ['M','D']]
 
+    print('\nTest DFS:\n')
     print('undirected graph:')
     graph = Graph(edgeList)
     path, parents, trav_time = graph.dfs('A')
@@ -112,3 +152,45 @@ if __name__ == "__main__":
     # {'A': [0, 27], 'B': [1, 26], 'M': [3, 8], 'F': [2, 15], 'C': [16, 25],
     #  'L': [17, 18], 'K': [19, 20], 'E': [21, 24], 'N': [22, 23], 'H': [12, 13],
     #  'G': [9, 14], 'I': [5, 6], 'D': [4, 7], 'J': [10, 11]}
+
+    print('\n--------------------------------------\n')
+    print('Test BFS:\n')
+    print('undirected graph:')
+    graph = Graph(edgeList)
+    path, parents, levels = graph.bfs('A')
+    print('path:\n', path)
+    # ['A', 'B', 'M', 'F', 'C', 'G', 'D', 'L', 'K', 'E', 'I', 'J', 'H', 'N']
+
+    print('parents:\n',parents)
+    # {'A': None, 'B': 'A', 'M': 'A', 'F': 'B', 'C': 'B', 'L': 'C', 'K': 'C',
+    #  'E': 'C', 'N': 'E', 'H': 'G', 'G': 'B', 'I': 'G', 'D': 'M', 'J': 'G'}
+
+    print('levels:\n',levels)
+    # {'A': 0, 'B': 1, 'M': 1, 'F': 2, 'C': 2, 'L': 3, 'K': 3, 'E': 3, 'N': 4,
+    #  'H': 3, 'G': 2, 'I': 3, 'D': 2, 'J': 3}
+
+    print('\nFrom A to G:')
+    path_size, path = graph.distance('A','G')
+    print('distance:',path_size) # 2
+    print('shortest path: ',path) # ['A', 'B', 'G']
+
+    print('\ndirected graph:')
+    graph = Graph(edgeList,direction='directed')
+    path, parents, levels = graph.bfs('A')
+    print('path:\n', path)
+    # ['A', 'B', 'M', 'F', 'C', 'G', 'D', 'L', 'K', 'E', 'I', 'J', 'H', 'N']
+
+    print('parents:\n',parents)
+    # {'A': None, 'B': 'A', 'M': 'A', 'F': 'B', 'C': 'B', 'L': 'C', 'K': 'C',
+    #  'E': 'C', 'N': 'E', 'H': 'G', 'G': 'B', 'I': 'G', 'D': 'M', 'J': 'G'}
+
+    print('levels:\n',levels)
+    # {'A': 0, 'B': 1, 'M': 1, 'F': 2, 'C': 2, 'L': 3, 'K': 3, 'E': 3, 'N': 4,
+    #  'H': 3, 'G': 2, 'I': 3, 'D': 2, 'J': 3}
+
+    print('\nFrom A to G:')
+    path_size, path = graph.distance('A','G')
+    print('distance:',path_size)  # 2
+    print('shortest path: ',path) # ['A', 'B', 'G']
+    
+    
