@@ -1,36 +1,34 @@
 from queue import Queue
 class Graph:
     def __init__(self,edges,direction='undirected'):
-        self.adj = self._edge2adj(edges,direction)        
+        self.direction = direction
+        self.adj = self._edge2adj(edges)        
         
-    def _edge2adj(self,edges,direction):
+    def _edge2adj(self,edges):
         # Converts a list of Graph edeges to an adjacency list.
         # It defaults to 'undirected' graph:
         # ['A', 'B'] means 'A' --> 'B' and 'B' --> 'A'
         # Optional input 'directed': creates an adjacency list
         # assuming edge direction from left to right:
-        # ['A', 'B'] means 'A' --> 'B'
-        if edges == None:
-            return {}
-        else:            
-            adj = {}
-            for item in edges:
-                if item[0] not in adj:
-                    adj[item[0]] = []
-                if item[1] not in adj[item[0]]:
-                    adj[item[0]].append(item[1])
-                if item[1] not in adj:
-                    adj[item[1]] = []
-                if direction == 'directed':
-                    continue
-                else:
-                    if item[0] not in adj[item[1]]:
-                        adj[item[1]].append(item[0])        
-            return adj
+        # ['A', 'B'] means 'A' --> 'B'                  
+        adj = {}
+        for item in edges:
+            if item[0] not in adj:
+                adj[item[0]] = []
+            if item[1] not in adj[item[0]]:
+                adj[item[0]].append(item[1])
+            if item[1] not in adj:
+                adj[item[1]] = []
+            if self.direction == 'directed':
+                continue
+            else:
+                if item[0] not in adj[item[1]]:
+                    adj[item[1]].append(item[0])        
+        return adj
 
     def dfs(self,u):
-        time = 0 # used with trav_time (used staticcally)
-        color = {} # W (White): Not visited, G (Grey): Partially visited, B (Black): visited 
+        time = 0 # used with trav_time (like a global variable)
+        color = {} # W (White): not visited, G (Grey): partially Visited, B (Black): visited 
         parents = {}
         trav_time = {} # [start, end]
         path = []
@@ -92,7 +90,40 @@ class Graph:
         while v is not None:
             path.append(v)
             v = parents[v]
-        return path_size, path[::-1] # reverse the path list      
+        return path_size, path[::-1] # reverse the path list
+
+    def is_cyclic(self):
+        # if adj is empty return False otherwise, choose a node (called first to run dfs)
+        keys = list(self.adj.keys())
+        if len(keys) == 0:
+            return False
+        else:
+            first = keys[0] # get the first key in the adj list
+        color = {}
+        parent = {}
+        # initialize the color and parents for all nodes
+        for u in self.adj:
+            color[u] = 'W'
+            parent[u] = None
+        u = first # preference to work with u instead of first
+        def dfs(u,color,parent):
+            color[u] = 'G'
+            for v in self.adj[u]:
+                if color[v] == 'W':
+                    if self.direction == 'undirected':
+                        parent[v] = u
+                    if dfs(v,color,parent):
+                        return True
+                elif self.direction == 'directed' and color[v] == 'G':
+                    return True
+                elif self.direction == 'undirected' and color[v] == 'G' and parent[u] != v:
+                    return True
+            color[u] = 'B'
+            return False
+
+        for u in self.adj:
+            if color[u] == 'W':
+                return dfs(u,color,parent)           
         
 
 if __name__ == "__main__":
@@ -191,5 +222,25 @@ if __name__ == "__main__":
     path_size, path = graph.distance('A','G')
     print('distance:',path_size)  # 2
     print('shortest path: ',path) # ['A', 'B', 'G']
+
+    print('\n--------------------------------------\n')
+    print('Different test cases:\n')
+    edgeList = [['A','C'],
+                ['A','B'],
+                ['B','D'],
+                ['D','A'],
+                ['D','E']]
+    g = Graph(edgeList,direction='directed')
+    print('\nCyclye in directed graph:')
+    print(g.is_cyclic()) #True
+
+    edgeList = [['A','C'],
+                ['A','B'],
+                ['A','D'],
+                ['B','D'],
+                ['D','E']]
+    g = Graph(edgeList)
+    print('\nCyclye in undirected graph:')
+    print(g.is_cyclic()) #True
     
     
