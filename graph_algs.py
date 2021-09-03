@@ -121,9 +121,13 @@ class Graph:
             color[u] = 'B'
             return False
 
+        cyc = False
         for u in self.adj:
             if color[u] == 'W':
-                return dfs(u,color,parent)           
+                cyc = dfs(u,color,parent)
+                if cyc:
+                    break
+        return cyc
         
 
 if __name__ == "__main__":
