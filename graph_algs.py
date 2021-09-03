@@ -29,8 +29,7 @@ class Graph:
             return adj
 
     def dfs(self,u):
-        global time # used with trav_time
-        time = 0
+        time = 0 # used with trav_time (used staticcally)
         color = {} # W (White): Not visited, G (Grey): Partially visited, B (Black): visited 
         parents = {}
         trav_time = {} # [start, end]
@@ -41,11 +40,10 @@ class Graph:
             parents[node] = None
             trav_time[node] = [-1, -1]
         path = []
-        self._dfs(u,color,parents,trav_time,path)
+        self._dfs(u,color,parents,trav_time,time,path)
         return path, parents, trav_time        
 
-    def _dfs(self,u,color,parents,trav_time,path):
-        global time
+    def _dfs(self,u,color,parents,trav_time,time,path):
         color[u] = 'G'
         trav_time[u][0] = time # start time
         time += 1 # increment time once node u is visited
@@ -53,10 +51,11 @@ class Graph:
         for v in self.adj[u]:
             if color[v] == 'W':
                 parents[v] = u
-                self._dfs(v,color,parents,trav_time,path)
+                time = self._dfs(v,color,parents,trav_time,time,path)
         color[u] = 'B'
         trav_time[u][1] = time # end time
         time += 1
+        return time
 
     def bfs(self,u):
         visited = {}
@@ -64,7 +63,7 @@ class Graph:
         parents = {}
         output = []
         q = Queue()
-        # initialize nodes, parents and trav_time
+        # initialize nodes, parents and level
         for node in self.adj:
             visited[node] = False
             parents[node] = None
