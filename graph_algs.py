@@ -2,7 +2,8 @@ from queue import Queue
 class Graph:
     def __init__(self,edges,direction='undirected'):
         self.direction = direction
-        self.adj = self._edge2adj(edges)        
+        self.adj = self._edge2adj(edges)
+        self.nodes = list(self.adj.keys())
         
     def _edge2adj(self,edges):
         # Converts a list of Graph edeges to an adjacency list.
@@ -29,27 +30,27 @@ class Graph:
     def dfs(self,u):
         time = 0 # used with trav_time (like a global variable)
         color = {} # W (White): not visited, G (Grey): partially Visited, B (Black): visited 
-        parents = {}
+        parent = {}
         trav_time = {} # [start, end]
         path = []
-        # initialize nodes, parents and trav_time
+        # initialize nodes, parent and trav_time
         for node in self.adj:
             color[node] = 'W'
-            parents[node] = None
+            parent[node] = None
             trav_time[node] = [-1, -1]
         path = []
-        self._dfs(u,color,parents,trav_time,time,path)
-        return path, parents, trav_time        
+        self._dfs(u,color,parent,trav_time,time,path)
+        return path, parent, trav_time        
 
-    def _dfs(self,u,color,parents,trav_time,time,path):
+    def _dfs(self,u,color,parent,trav_time,time,path):
         color[u] = 'G'
         trav_time[u][0] = time # start time
         time += 1 # increment time once node u is visited
         path.append(u)        
         for v in self.adj[u]:
             if color[v] == 'W':
-                parents[v] = u
-                time = self._dfs(v,color,parents,trav_time,time,path)
+                parent[v] = u
+                time = self._dfs(v,color,parent,trav_time,time,path)
         color[u] = 'B'
         trav_time[u][1] = time # end time
         time += 1
@@ -58,13 +59,13 @@ class Graph:
     def bfs(self,u):
         visited = {}
         level = {} # distance
-        parents = {}
+        parent = {}
         output = []
         q = Queue()
-        # initialize nodes, parents and level
+        # initialize nodes, parent and level
         for node in self.adj:
             visited[node] = False
-            parents[node] = None
+            parent[node] = None
             level[node] = -1
         # set values for the given Node: u
         visited[u] = True
@@ -78,34 +79,30 @@ class Graph:
             for v in self.adj[u]:
                 if not visited[v]:
                     visited[v] = True
-                    parents[v] = u
+                    parent[v] = u
                     level[v] = level[u] +1
                     q.put(v)
-        return output, parents, level
+        return output, parent, level
 
     def distance(self,u,v):
-        output, parents, level = self.bfs(u)
+        output, parent, level = self.bfs(u)
         path_size = level[v]
         path = []
         while v is not None:
             path.append(v)
-            v = parents[v]
+            v = parent[v]
         return path_size, path[::-1] # reverse the path list
 
     def is_cyclic(self):
-        # if adj is empty return False otherwise, choose a node (called first to run dfs)
-        keys = list(self.adj.keys())
-        if len(keys) == 0:
+        if len(self.nodes) == 0: 
             return False
-        else:
-            first = keys[0] # get the first key in the adj list
         color = {}
         parent = {}
-        # initialize the color and parents for all nodes
+        # initialize the color and parent for all nodes
         for u in self.adj:
             color[u] = 'W'
             parent[u] = None
-        u = first # preference to work with u instead of first
+        u = self.nodes[0] # chose a node (first one in this case to run dfs with)
         def dfs(u,color,parent):
             color[u] = 'G'
             for v in self.adj[u]:
@@ -154,11 +151,11 @@ if __name__ == "__main__":
     print('\nTest DFS:\n')
     print('undirected graph:')
     graph = Graph(edgeList)
-    path, parents, trav_time = graph.dfs('A')
+    path, parent, trav_time = graph.dfs('A')
     print('path:\n', path)
     # ['A', 'B', 'F', 'M', 'G', 'I', 'D', 'J', 'H', 'N', 'E', 'C', 'L', 'K']
     
-    print('parents:\n',parents)
+    print('parent:\n',parent)
     # {'A': None, 'B': 'A', 'M': 'F', 'F': 'B',
     #  'C': 'E', 'L': 'C', 'K': 'C', 'E': 'N',
     #  'N': 'H', 'H': 'G', 'G': 'M', 'I': 'G',
@@ -172,11 +169,11 @@ if __name__ == "__main__":
     print('\ndirected graph:')
 
     graph = Graph(edgeList,direction='directed')
-    path, parents, trav_time = graph.dfs('A')
+    path, parent, trav_time = graph.dfs('A')
     print('path:\n', path)
     # ['A', 'B', 'F', 'M', 'D', 'I', 'G', 'J', 'H', 'C', 'L', 'K', 'E', 'N']
     
-    print('parents:\n',parents)
+    print('parent:\n',parent)
     # {'A': None, 'B': 'A', 'M': 'F', 'F': 'B',
     #  'C': 'B', 'L': 'C', 'K': 'C', 'E': 'C',
     #  'N': 'E', 'H': 'G', 'G': 'F', 'I': 'D',
@@ -191,15 +188,15 @@ if __name__ == "__main__":
     print('Test BFS:\n')
     print('undirected graph:')
     graph = Graph(edgeList)
-    path, parents, levels = graph.bfs('A')
+    path, parent, level = graph.bfs('A')
     print('path:\n', path)
     # ['A', 'B', 'M', 'F', 'C', 'G', 'D', 'L', 'K', 'E', 'I', 'J', 'H', 'N']
 
-    print('parents:\n',parents)
+    print('parent:\n',parent)
     # {'A': None, 'B': 'A', 'M': 'A', 'F': 'B', 'C': 'B', 'L': 'C', 'K': 'C',
     #  'E': 'C', 'N': 'E', 'H': 'G', 'G': 'B', 'I': 'G', 'D': 'M', 'J': 'G'}
 
-    print('levels:\n',levels)
+    print('level:\n',level)
     # {'A': 0, 'B': 1, 'M': 1, 'F': 2, 'C': 2, 'L': 3, 'K': 3, 'E': 3, 'N': 4,
     #  'H': 3, 'G': 2, 'I': 3, 'D': 2, 'J': 3}
 
@@ -210,15 +207,15 @@ if __name__ == "__main__":
 
     print('\ndirected graph:')
     graph = Graph(edgeList,direction='directed')
-    path, parents, levels = graph.bfs('A')
+    path, parent, level = graph.bfs('A')
     print('path:\n', path)
     # ['A', 'B', 'M', 'F', 'C', 'G', 'D', 'L', 'K', 'E', 'I', 'J', 'H', 'N']
 
-    print('parents:\n',parents)
+    print('parent:\n',parent)
     # {'A': None, 'B': 'A', 'M': 'A', 'F': 'B', 'C': 'B', 'L': 'C', 'K': 'C',
     #  'E': 'C', 'N': 'E', 'H': 'G', 'G': 'B', 'I': 'G', 'D': 'M', 'J': 'G'}
 
-    print('levels:\n',levels)
+    print('level:\n',level)
     # {'A': 0, 'B': 1, 'M': 1, 'F': 2, 'C': 2, 'L': 3, 'K': 3, 'E': 3, 'N': 4,
     #  'H': 3, 'G': 2, 'I': 3, 'D': 2, 'J': 3}
 
