@@ -28,8 +28,8 @@ class Graph:
         return adj
 
     def dfs(self,u):
-        time = 0 # used with trav_time (like a global variable)
-        color = {} # W (White): not visited, G (Grey): partially Visited, B (Black): visited 
+        time = 0 # used statically (passed to AND returned from the recusive function _dfs)
+        color = {} # W (White): not visited, G (Grey): partially visited, B (Black): fully visited 
         parent = {}
         trav_time = {} # [start, end]
         path = []
@@ -67,6 +67,7 @@ class Graph:
             visited[node] = False
             parent[node] = None
             level[node] = -1
+            
         # set values for the given Node: u
         visited[u] = True
         level[u] = 0
@@ -98,11 +99,12 @@ class Graph:
             return False
         color = {}
         parent = {}
-        # initialize the color and parent for all nodes
+        # initialize color and parent for all nodes
         for u in self.adj:
             color[u] = 'W'
             parent[u] = None
-        u = self.nodes[0] # chose a node (first one in this case to run dfs with)
+
+        u = self.nodes[0] # choose a node (first one in this case to run dfs with)
         def dfs(u,color,parent):
             color[u] = 'G'
             for v in self.adj[u]:
@@ -125,6 +127,55 @@ class Graph:
                 if cyc:
                     break
         return cyc
+
+    def articulation(self):
+        # initialize discovery time (disc), lowest possible discovery time (low),
+        # parent and articulation points (ap)
+        disc = {}
+        low = {}
+        parent = {}
+        AP = {}
+        for node in self.nodes:
+            disc[node] = -1
+            low[node] = -1
+            parent[node] = None
+            AP[node] = False
+
+        time = 0 # used statically (passed to AND returned from the recusive function)
+
+        for node in self.nodes:
+            if disc[node] == -1:
+                time = self._articulation_dfs(node, disc,low, parent, AP, time)
+
+        articulation_points = []
+        for ap in AP:
+            if AP[ap] == True:
+                articulation_points.append(ap)
+        return articulation_points
+
+        
+    def _articulation_dfs(self,u, disc,low, parent, AP, time):
+        disc[u] = time
+        low[u] = time
+        time += 1
+        children = 0
+
+        for v in self.adj[u]:
+            if disc[v] == -1: # if v is not visited
+                children += 1
+                parent[v] = u
+                time = self._articulation_dfs(v, disc,low, parent, AP, time)
+                low[u] = min(low[u], low[v])
+                # if u is root
+                if parent[u] == None and children > 1:
+                    AP[u] = True
+                # if a component gets separated
+                if parent[u] != None and low[v] >= disc[v]:
+                    AP[u] = True
+            elif v != parent[u]: # Ignore child to parent edge
+                low[u] = min(low[u],disc[v])
+        return time
+        
         
 
 if __name__ == "__main__":
@@ -243,5 +294,15 @@ if __name__ == "__main__":
     g = Graph(edgeList)
     print('\nCyclye in undirected graph:')
     print(g.is_cyclic()) #True
+
+    print('\n--------------------------------------\n')
+    print('Test Articulation Points:')
+    edgeList = [['A','B'],
+                ['A','C'],
+                ['A','D'],
+                ['D','E'],
+                ['D','F']]
+    g = Graph(edgeList)
+    print(g.articulation()) #['A', 'D'] 
     
     
