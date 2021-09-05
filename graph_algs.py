@@ -4,6 +4,7 @@ class Graph:
         self.direction = direction
         self.adj = self._edge2adj(edges)
         self.nodes = list(self.adj.keys())
+        self.edges = edges
         
     def _edge2adj(self,edges):
         # Converts a list of Graph edeges to an adjacency list.
@@ -28,7 +29,7 @@ class Graph:
         return adj
 
     def dfs(self,u):
-        time = 0 # used statically (passed to AND returned from the recusive function _dfs)
+        time = 0 # used statically (passed to AND returned from the recursive function _dfs)
         color = {} # W (White): not visited, G (Grey): partially visited, B (Black): fully visited 
         parent = {}
         trav_time = {} # [start, end]
@@ -129,8 +130,9 @@ class Graph:
         return cyc
 
     def articulation(self):
+        # Based on Tarjan's algorithm
         # initialize discovery time (disc), lowest possible discovery time (low),
-        # parent and articulation points (ap)
+        # parent and articulation points (AP)
         disc = {}
         low = {}
         parent = {}
@@ -141,7 +143,7 @@ class Graph:
             parent[node] = None
             AP[node] = False
 
-        time = 0 # used statically (passed to AND returned from the recusive function)
+        time = 0 # used statically (passed to AND returned from the recursive function _articulation_dfs)
 
         for node in self.nodes:
             if disc[node] == -1:
@@ -169,7 +171,7 @@ class Graph:
                 # if u is root
                 if parent[u] == None and children > 1:
                     AP[u] = True
-                # if a component gets separated
+                # if a component separable
                 if parent[u] != None and low[v] >= disc[v]:
                     AP[u] = True
             elif v != parent[u]: # Ignore child to parent edge
@@ -177,7 +179,6 @@ class Graph:
         return time
         
         
-
 if __name__ == "__main__":
     edgeList = [['A','B'],
                 ['A','M'],
