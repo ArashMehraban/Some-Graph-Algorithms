@@ -3,14 +3,12 @@ class Node:
         self.data = data
         self.next = None
 
-# This is a Singly Linked List
-
-
+# Singly Linked List
 class LinkedList:
     def __init__(self):
         self.head = None
 
-    # adds a node with a given value to the begining of the linked list
+    # adds a node with a given value to the linked list
     def add(self, data):
         node = Node(data)
         node.next = self.head
@@ -81,8 +79,7 @@ class LinkedList:
                 return
             cur = cur.next
             idx_count += 1
-            
-        
+                
     # removes a node at a given index
     def remove(self, index):
         if(index < 0):
@@ -101,7 +98,7 @@ class LinkedList:
                 if idx_count == index:
                     prev.next = cur.next
                     return
-
+    # reverses the link-list
     def reverse(self):
         prev = None
         cur = self.head
@@ -111,6 +108,16 @@ class LinkedList:
             prev = cur
             cur = nxt
         self.head = prev
+
+    # reverses the link-list recuresively
+    def reverse_recursively(self):
+        def rec(prev,cur):
+            if not cur:
+                return prev            
+            self.head = rec(cur,cur.next)
+            cur.next = prev            
+            return self.head
+        return rec(None,self.head)
 
 
 if __name__ == "__main__":
@@ -178,6 +185,14 @@ if __name__ == "__main__":
     sll.reverse()
     sll.display() #[0 37 -400 50 64 ] 
     sll.reverse()
+    sll.display() #[64 50 -400 37 0 ]
+
+    print('---------------------------')
+
+    sll.display() #[64 50 -400 37 0 ] <--current list
+    sll.reverse_recursively()
+    sll.display() #[0 37 -400 50 64 ]
+    sll.reverse_recursively()
     sll.display() #[64 50 -400 37 0 ]
 
 
