@@ -35,7 +35,7 @@ class LinkedList:
         print(']')
    
     # returns the value at the given index
-    def data_at_idx(self, index):
+    def get(self, index):
         if self.head == None or index < 0:
             return 
         cur = self.head
@@ -133,14 +133,14 @@ if __name__ == "__main__":
     print('---------------------------')
 
     sll.display() # [64 -5 -4 37 0 10 ]
-    print(sll.data_at_idx(-1)) #None due to invalid index
-    print(sll.data_at_idx(0))  #64
-    print(sll.data_at_idx(1))  #-5 
-    print(sll.data_at_idx(2))  #-4
-    print(sll.data_at_idx(3))  #37
-    print(sll.data_at_idx(4))  #0
-    print(sll.data_at_idx(5))  #10
-    print(sll.data_at_idx(6))  #None due to invalid index
+    print(sll.get(-1)) #None due to invalid index
+    print(sll.get(0))  #64
+    print(sll.get(1))  #-5 
+    print(sll.get(2))  #-4
+    print(sll.get(3))  #37
+    print(sll.get(4))  #0
+    print(sll.get(5))  #10
+    print(sll.get(6))  #None due to invalid index
     
     print('---------------------------')
 
