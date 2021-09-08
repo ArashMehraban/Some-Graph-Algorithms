@@ -1,5 +1,5 @@
 class Node:
-    def __init__(self, data=None):
+    def __init__(self, data):
         self.data = data
         self.next = None
 
@@ -8,21 +8,19 @@ class Node:
 
 class LinkedList:
     def __init__(self):
-        self.head = Node()
+        self.head = None
 
-    # adds a node with a given value to the end of the linked list
+    # adds a node with a given value to the begining of the linked list
     def add(self, data):
-        new_node = Node(data)
-        cur = self.head
-        while cur.next is not None:
-            cur = cur.next
-        cur.next = new_node
+        node = Node(data)
+        node.next = self.head
+        self.head = node
 
     # returns the size of the linked list
     def length(self):
         cur = self.head
         count = 0
-        while cur.next is not None:
+        while cur:
             count += 1
             cur = cur.next
         return count
@@ -30,135 +28,156 @@ class LinkedList:
     # displays the elements in linked list
     def display(self):
         cur = self.head
-        elems = []
-        while cur.next is not None:
+        print('[',end='')
+        while cur:
+            print(cur.data, end=' ')
             cur = cur.next
-            elems.append(cur.data)
-        print(elems)
+        print(']')
+   
     # returns the value at the given index
-
-    def get(self, index):
-        if(index >= self.length()):
-            print('LinkedList has less elements than {}'.format(index))
-            return
+    def data_at_idx(self, index):
+        if self.head == None or index < 0:
+            return 
         cur = self.head
         idx_count = 0
-        while idx_count <= index:
+        while cur.next is not None and idx_count < index:
             cur = cur.next
             idx_count += 1
-        return cur.data
+        if idx_count == index:
+            return cur.data
+        else:
+            return 
 
     # inserts a value at a given index
     def insert(self, index, data):
-        if(index < 0):
-            print('ERROR: Not a valid index!')
-            return
-        ll_length = self.length()
-        if(index > ll_length+1):
-            print('LinkedList size was {}. You inserted in index {}.\nUnset\
-            indecies were set to \'None\'\n'.format(
-                ll_length, index))
-            diff = index - ll_length
-            for i in range(diff-1):
-                self.add(None)
+        if index < 0:
+            return 
+        if index == 0:
             self.add(data)
-        else:
-            cur = self.head
-            idx_count = 0
-            while True:
-                last_node = cur
-                cur = cur.next
-                if(idx_count == index):
-                    new_node = Node(data)
-                    last_node.next = new_node
-                    new_node.next = cur
-                    return
-                idx_count += 1
-
+            return
+        if self.head == None and index > 0:
+            return         
+        cur = self.head
+        idx_count = 0
+        while cur.next is not None:
+            prev = cur
+            cur = cur.next            
+            idx_count += 1
+            if idx_count == index:
+                node = Node(data)
+                prev.next = node
+                node.next = cur
+                return 
+            
+    # updates a node's value with a given value at a given index
+    def update(self, index, data):
+        if index < 0:
+            return
+        cur = self.head
+        idx_count = 0
+        while cur.next is not None:
+            if idx_count == index:
+                cur.data = data
+                return
+            cur = cur.next
+            idx_count += 1
+            
+        
     # removes a node at a given index
     def remove(self, index):
         if(index < 0):
-            print('ERROR! Invalid index ({}) to be removed!\n'.format(index))
             return
-        if(index >= self.length()):
-            print('LinkedList has less elements than {}'.format(index))
+        cur = self.head   
+        if index == 0:
+            self.head = cur.next
+            cur = None
             return
-        cur = self.head
-        idx_count = 0
-        while True:
-            last_node = cur
-            cur = cur.next
-            if(idx_count == index):
-                last_node.next = cur.next
-                return
-            idx_count += 1
+        else:
+            idx_count = 0
+            while cur.next is not None:
+                prev = cur
+                cur = cur.next
+                idx_count += 1
+                if idx_count == index:
+                    prev.next = cur.next
+                    return
 
-    # updates a node's value with a given value at a given index
-    def update(self, index, data):
-        if(index >= self.length()):
-            print('LinkedList is samller is samller than {} elements'.format(index))
-            return
+    def reverse(self):
+        prev = None
         cur = self.head
-        idx_count = 0
-        while True:
-            cur = cur.next
-            if(idx_count == index):
-                cur.data = data
-                return
-            idx_count += 1
+        while cur is not None:
+            nxt = cur.next
+            cur.next = prev
+            prev = cur
+            cur = nxt
+        self.head = prev
 
 
 if __name__ == "__main__":
 
-    print('\n')
-    print('Tesing our LinkedList in Python...')
-    print('\n')
     sll = LinkedList()
-    print('An empty Singly LinkedList created')
-    print('\n')
-    print('Current LinkedList:')
-    sll.display()
-    print('Current size of LinkedList: {}'.format(sll.length()))
-    print('\n')
-    print('Some numbers were added to the LinkedList...')
+    sll.display()  #[]
+    print('Size: {}\n'.format(sll.length())) #0
+
+    print('---------------------------')
+    
     sll.add(10)
     sll.add(0)
     sll.add(37)
     sll.add(-4)
     sll.add(-5)
     sll.add(64)
-    print('Current LinkedList:')
-    sll.display()
-    print('Current size of the LinkedList: {}'.format(sll.length()))
-    print('\n')
-    print('Value 3 was added to index 3:')
-    print('Current LinkedList:')
-    sll.insert(3, 3)
-    sll.display()
-    print('Current size of the LinkedList: {}'.format(sll.length()))
-    print('\n')
-    print('Value 8 was added to index 10. READ THE MESSAGE BELOW from function!!')
-    sll.insert(10, 8)
-    print('Current LinkedList:')
-    sll.display()
-    print('\n')
-    print('Index 8 was updated with value 7:')
-    sll.update(8, 7)
-    print('Current LinkedList:')
-    sll.display()
-    print('\n')
-    print('Index 8 was updated with value -100 again:')
-    sll.update(8, -100)
-    print('Current LinkedList:')
-    sll.display()
-    print('\n')
-    print('A value was tried to be added to index -7:')
-    sll.insert(-7, 21)
-    print('Current LinkedList:')
-    sll.display()
-    print('\n')
-    print('The first element was removed from LinkedList')
+    sll.display() #[64 -5 -4 37 0 10 ]
+    print('Size: {}\n'.format(sll.length())) #6
+    
+    print('---------------------------')
+
+    sll.display() # [64 -5 -4 37 0 10 ]
+    print(sll.data_at_idx(-1)) #None due to invalid index
+    print(sll.data_at_idx(0))  #64
+    print(sll.data_at_idx(1))  #-5 
+    print(sll.data_at_idx(2))  #-4
+    print(sll.data_at_idx(3))  #37
+    print(sll.data_at_idx(4))  #0
+    print(sll.data_at_idx(5))  #10
+    print(sll.data_at_idx(6))  #None due to invalid index
+    
+    print('---------------------------')
+
+    sll.insert(0, 330) 
+    sll.display()   #[330 64 -5 -4 37 0 10 ]
+    sll.insert(3, 50) 
+    sll.display()   #[330 64 -5 50 -4 37 0 10 ]
+
+    print('---------------------------')
+
+    sll.update(0, 700)
+    sll.display() #[700 64 -5 50 -4 37 0 10 ]
+    sll.update(4, -400)
+    sll.display() #[700 64 -5 50 -400 37 0 10 ]
+    sll.update(-1, 500)
+    sll.display() #[700 64 -5 50 -4 37 0 10 ] <-- No change due to invalid index
+    sll.update(10, 100)
+    sll.display() #[700 64 -5 50 -400 37 0 10 ] <-- No change due to invalid index
+
+    print('---------------------------')
+    
+    sll.display() #[700 64 -5 50 -400 37 0 10 ]
     sll.remove(0)
-    print('Current LinkedList:')
-    sll.display()
-    print('\n')
+    sll.display() #[64 -5 50 -400 37 0 10 ]
+    sll.remove(1)
+    sll.display() #[64 50 -400 37 0 10 ]
+    sll.remove(5)
+    sll.display() #[64 50 -400 37 0 ]
+    sll.remove(5)
+    sll.display() #[64 50 -400 37 0 ]  <-- No change due to invalid index
+
+    print('---------------------------')
+
+    sll.display() #[64 50 -400 37 0 ] <--current list
+    sll.reverse()
+    sll.display() #[0 37 -400 50 64 ] 
+    sll.reverse()
+    sll.display() #[64 50 -400 37 0 ]
+
+
