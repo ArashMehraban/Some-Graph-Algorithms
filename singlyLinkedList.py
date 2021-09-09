@@ -3,12 +3,12 @@ class Node:
         self.data = data
         self.next = None
 
-# Singly Linked List
+# Singly Linked List:    head-->[ ]-->[ ]--> ... -->[ ]-->[ ]-->None (tail)
 class LinkedList:
     def __init__(self):
         self.head = None
 
-    # adds a node with a given value to the linked list
+    # adds a node with a given value to the end of linked list
     def add(self, data):
         node = Node(data)
         node.next = self.head
@@ -38,13 +38,11 @@ class LinkedList:
             return 
         cur = self.head
         idx_count = 0
-        while cur.next is not None and idx_count < index:
+        while cur:
+            if idx_count == index:
+                return cur.data
             cur = cur.next
             idx_count += 1
-        if idx_count == index:
-            return cur.data
-        else:
-            return 
 
     # inserts a value at a given index
     def insert(self, index, data):
@@ -57,7 +55,7 @@ class LinkedList:
             return         
         cur = self.head
         idx_count = 0
-        while cur.next is not None:
+        while cur:
             prev = cur
             cur = cur.next            
             idx_count += 1
@@ -73,7 +71,7 @@ class LinkedList:
             return
         cur = self.head
         idx_count = 0
-        while cur.next is not None:
+        while cur:
             if idx_count == index:
                 cur.data = data
                 return
@@ -98,6 +96,7 @@ class LinkedList:
                 if idx_count == index:
                     prev.next = cur.next
                     return
+                
     # reverses the link-list
     def reverse(self):
         prev = None
