@@ -4,7 +4,7 @@ class Graph:
         self.direction = direction
         self.adj = self._edge2adj(edges)
         self.nodes = list(self.adj.keys())
-        self.edges = edges
+        self.edges = self._edgeWeights(edges)
         
     def _edge2adj(self,edges):
         # Converts a list of Graph edeges to an adjacency list.
@@ -27,6 +27,21 @@ class Graph:
                 if item[0] not in adj[item[1]]:
                     adj[item[1]].append(item[0])        
         return adj
+
+    def _edgeWeights(self,edges):
+        # Creates a dictionary of edges-->weight
+        # Note: use tuples since list is unhashabe
+        # ['A','B', W] converts to {('A','B') : W}
+        # ['A','B'] converts to {('A','B') : 1} 
+        col_sz = len(edges[0])
+        edgesMap = {}
+        for item in edges:
+            if col_sz == 2:
+                W = 1
+            if col_sz == 3:
+                W = item[2]
+            edgesMap[(item[0],item[1])] = W
+        return edgesMap           
 
     def dfs(self,u):
         time = 0 # used statically (passed to AND returned from the recursive function _dfs)
