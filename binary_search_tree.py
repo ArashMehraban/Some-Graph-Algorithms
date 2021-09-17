@@ -126,6 +126,13 @@ class BST:
             return False
         return (cur1.val == cur1.val) and self._is_symmetric(cur1.left,cur2.right) and self._is_symmetric(cur1.right,cur2.left)    
 
+    def fill_randint(self,num_nodes=15,Min=0,Max=100):
+        import random
+        random_sample = random.sample(range(Min,Max),num_nodes)
+        for val in random_sample:
+            self.insert(val)
+        del random_sample
+        return self.root
 
 if __name__ == "__main__":
     bst = BST()               
@@ -144,3 +151,6 @@ if __name__ == "__main__":
     bst.show()            # 10 16 20 50
     print(bst.is_valid()) # True
     print(bst.is_symmetric()) #False
+    bst_rand = BST()
+    bst_rand.fill_randint()
+    bst_rand.show()       # 0 6 12 16 19 32 37 52 53 58 63 73 83 95 99
