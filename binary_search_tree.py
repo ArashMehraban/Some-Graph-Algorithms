@@ -112,8 +112,20 @@ class BST:
             return True
         else:
             return False
-        
-        
+
+    def is_symmetric(self):
+        if self._is_symmetric(self.root,self.root):
+            return True
+        else:
+            return False
+
+    def _is_symmetric(self,cur1,cur2):
+        if not cur1 and not cur2:
+            return True
+        elif not cur1 or not cur2:
+            return False
+        return (cur1.val == cur1.val) and self._is_symmetric(cur1.left,cur2.right) and self._is_symmetric(cur1.right,cur2.left)    
+
 
 if __name__ == "__main__":
     bst = BST()               
@@ -131,3 +143,4 @@ if __name__ == "__main__":
     bst.remove(7)        
     bst.show()            # 10 16 20 50
     print(bst.is_valid()) # True
+    print(bst.is_symmetric()) #False
