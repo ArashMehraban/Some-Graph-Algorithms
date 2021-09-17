@@ -30,7 +30,7 @@ class Graph:
 
     def _edgeWeights(self,edges):
         # Creates a dictionary of edges-->weight
-        # Note: use tuples since list is unhashabe
+        # Note: use tuples since list is unhashable
         # ['A','B', W] converts to {('A','B') : W}
         # ['A','B'] converts to {('A','B') : 1} 
         col_sz = len(edges[0])
