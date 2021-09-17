@@ -72,17 +72,16 @@ class BST:
             return False
 
     def remove(self,val):
-        if self.root != None:
-            return self._remove(self.root,val)
-        else:
-            return None
+        self.root = self._remove(self.root,val)
 
     def _remove(self,cur,val):
-        if val < cur.val:
+        if cur == None:
+            return
+        elif val < cur.val:
             cur.left = self._remove(cur.left,val)
         elif val > cur.val:
             cur.right = self._remove(cur.right,val)
-        elif val == cur.val:
+        else:
             if not cur.left and not cur.right: #leaf node
                 return None
             if not cur.left and cur.right: #node with 1 right child
@@ -97,7 +96,7 @@ class BST:
                 while smallest.left:
                     smallest = smallest.left
                 cur.val = smallest.val
-                cur.right = self._remove(cur.right,cur.val)        
+                cur.right = self._remove(cur.right,cur.val)
         return cur
 
     def is_valid(self):
@@ -127,8 +126,8 @@ if __name__ == "__main__":
     bst.show()            # 7 8 10 16 20 50
     print(bst.height())   # 4
     print(bst.exists(16)) # True
-    bst.remove(7)         
-    bst.show()            # 8 10 16 20 50
-    bst.remove(10)        
-    bst.show()            # 10 17 20 25 50
+    bst.remove(8)         
+    bst.show()            # 7 10 16 20 50
+    bst.remove(7)        
+    bst.show()            # 10 16 20 50
     print(bst.is_valid()) # True
