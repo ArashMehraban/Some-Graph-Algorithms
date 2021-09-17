@@ -128,11 +128,23 @@ class BST:
 
     def fill_randint(self,num_nodes=15,Min=0,Max=100):
         import random
-        random_sample = random.sample(range(Min,Max),num_nodes)
+        random_sample = random.sample(range(Min,Max),num_nodes) # to avoid Repeated values
         for val in random_sample:
             self.insert(val)
         del random_sample
         return self.root
+
+    def diameter(self):
+        self.res = 0 # static value (used globally).
+        return self._diameter(self.root)
+        
+    def _diameter(self,cur): # using dfs concept
+        if not cur:
+            return -1
+        left = self._diameter(cur.left)
+        right = self._diameter(cur.right)
+        self.res = max(self.res, 2 + left + right)
+        return 1 + max(left,right)
 
 if __name__ == "__main__":
     bst = BST()               
@@ -151,6 +163,9 @@ if __name__ == "__main__":
     bst.show()            # 10 16 20 50
     print(bst.is_valid()) # True
     print(bst.is_symmetric()) #False
+
     bst_rand = BST()
     bst_rand.fill_randint()
     bst_rand.show()       # 0 6 12 16 19 32 37 52 53 58 63 73 83 95 99
+
+    print(bst.diameter()) # 2
