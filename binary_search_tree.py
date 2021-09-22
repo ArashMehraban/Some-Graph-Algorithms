@@ -356,6 +356,9 @@ if __name__ == "__main__":
     bst.insert(45)
     bst.show()                # 10 16 20 45 50
     bst_copy.show()           # 10 16 20 50    <--bst_copy is not changed when bst is changed
+    bst_copy.insert(32)
+    bst_copy.show()           # 10 16 20 32 50
+    bst.show()                # 10 16 20 45 50 <--bst is not changed when bst_copy is changed
 
 
 
