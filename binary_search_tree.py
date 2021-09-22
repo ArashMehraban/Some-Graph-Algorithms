@@ -53,24 +53,22 @@ class BST:
                 self._print2Dlist(output)
                         
             elif view == 'left':
-                self.left_side = {}
+                output = []
                 level = 0 # root level
-                self._show_leftview(self.root,level)
-                for val in self.left_side.values():
-                    print(val, end =' ')
+                self._show_left(self.root,level,output)
+                self._print2Dlist(output)
                     
             elif view == 'right':
-                self.right_side = {}
+                output = []
                 level = 0 # root level
-                self._show_rightview(self.root,level)
-                for val in self.right_side.values():
-                    print(val, end =' ')
+                self._show_right(self.root,level,output)
+                self._print2Dlist(output)
         print()
 
     def _print2Dlist(self,list2d):
         for item in list2d:
             for val in item:
-                print(val, end = ' ')
+                print(str(val), end = ' ')
 
     def _show_preOrder(self,cur):
         if cur != None:
@@ -94,7 +92,6 @@ class BST:
         if cur != None:
             if len(output) <= level:
                 output += [[]]
-            #self.order[level].append(cur.val)
             output[level].append(cur.val)
             self._show_levelOrder(cur.left,level+1,output)
             self._show_levelOrder(cur.right,level+1,output)
@@ -110,19 +107,21 @@ class BST:
             else:
                 output[level].insert(0,cur.val) #prepend
 
-    def _show_leftview(self,cur,level):
+    def _show_left(self,cur,level,output):
         if cur != None:
-            if level not in self.left_side:
-                self.left_side[level] = cur.val
-                self._show_leftview(cur.left,level+1) # <-- important to call cur.left first
-                self._show_leftview(cur.right,level+1)
+            if len(output) <= level:
+                output += [[]]
+                output[level].append(cur.val)
+                self._show_left(cur.left,level+1,output) # <-- important to call cur.left first
+                self._show_left(cur.right,level+1,output)
 
-    def _show_rightview(self,cur,level):
+    def _show_right(self,cur,level,output):
         if cur != None:
-            if level not in self.right_side:
-                self.right_side[level] = cur.val
-                self._show_rightview(cur.right,level+1) # <-- important to call cur.right first
-                self._show_rightview(cur.left,level+1)                     
+            if len(output) <= level:
+                output += [[]]
+                output[level].append(cur.val)
+                self._show_right(cur.right,level+1,output) # <-- important to call cur.right first
+                self._show_right(cur.left,level+1,output)                     
             
     def height(self):
         if self.root != None:
