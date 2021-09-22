@@ -297,16 +297,16 @@ class BST:
         return max(cur.val, cur.val+l, cur.val+r)
 
     def copy(self):
-        new_BST = BST()
-        return self._copy(self.root,new_BST)
-
-    def _copy(self,cur,new_BST):
+        self.new_BST = BST()
+        self._copy(self.root)
+        return self.new_BST
+    
+    def _copy(self,cur):
         if not cur:
             return None
-        new_BST.insert(cur.val)
-        new_BST.left = self._copy(cur.left,new_BST)
-        new_BST.right = self._copy(cur.right,new_BST)
-        return new_BST     
+        self.new_BST.insert(cur.val)
+        self.new_BST.left = self._copy(cur.left)
+        self.new_BST.right = self._copy(cur.right)
 
 if __name__ == "__main__":
     bst = BST()               
