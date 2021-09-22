@@ -281,6 +281,20 @@ class BST:
             self.res = cur.val
             return
         return left or right or TFcur
+
+    def max_sum_path(self):
+        if self.root != None:
+            self.Max = self.root.val
+        self._max_sum_path(self.root)
+        return self.Max
+
+    def _max_sum_path(self,cur):
+        if not cur:
+            return 0
+        l = self._max_sum_path(cur.left)
+        r = self._max_sum_path(cur.right)
+        self.Max = max(self.Max, cur.val, cur.val+l, cur.val+r, cur.val+l+r)
+        return max(cur.val, cur.val+l, cur.val+r)
         
 
 if __name__ == "__main__":
@@ -320,9 +334,10 @@ if __name__ == "__main__":
 
     print(bst.kth_smallest(3)) #20
 
-    bst.show()             # 10 16 20 50
-    print(bst.lca(10,50))  # 10
-    print(bst.lca(8,10))   #None
+    bst.show()                # 10 16 20 50
+    print(bst.lca(10,50))     # 10
+    print(bst.lca(8,10))      # None
+    print(bst.max_sum_path()) # 86
 
 
 
