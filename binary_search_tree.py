@@ -134,7 +134,7 @@ class BST:
                 output += [[]]
                 output[level].append(cur.val)
                 self._show_right(cur.right,level+1,output) # <-- important to call cur.right first
-                self._show_right(cur.left,level+1,output)
+                self._show_right(cur.left,level+1,output)   
 
     def _show_vertical(self,cur,r,c):
         if cur != None:
@@ -263,6 +263,26 @@ class BST:
         self.count += 1
         self._kth_smallest(cur.right,k)
 
+    def lca(self,p,q): #Lowest Common Ancestor (lca)
+        self.res = None
+        self._lca(self.root,p,q)
+        if self.res != None:
+            return self.res
+        else:
+            return None
+
+    def _lca(self,cur,p,q):
+        if not cur:
+            return False
+        left = self._lca(cur.left,p,q)
+        right = self._lca(cur.right,p,q)
+        TFcur = (cur.val==p) or (cur.val==q)
+        if (left and right) or (TFcur and left) or (TFcur and right):
+            self.res = cur.val
+            return
+        return left or right or TFcur
+        
+
 if __name__ == "__main__":
     bst = BST()               
     bst.insert(8)        
@@ -299,6 +319,10 @@ if __name__ == "__main__":
     print(bst.diameter()) # 2
 
     print(bst.kth_smallest(3)) #20
+
+    bst.show()             # 10 16 20 50
+    print(bst.lca(10,50))  # 10
+    print(bst.lca(8,10))   #None
 
 
 
