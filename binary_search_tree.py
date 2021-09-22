@@ -229,6 +229,21 @@ class BST:
         self.res = max(self.res, 2 + left + right)
         return 1 + max(left,right)
 
+    def kth_smallest(self,k):
+        self.count = 1
+        self.kth = None
+        self._kth_smallest(self.root,k)
+        return self.kth
+    
+    def _kth_smallest(self,cur,k):
+        if not cur or self.kth:
+            return
+        self._kth_smallest(cur.left,k) # similar to inOrder show
+        if self.count == k:
+            self.kth = cur.val
+        self.count += 1
+        self._kth_smallest(cur.right,k)
+
 if __name__ == "__main__":
     bst = BST()               
     bst.insert(8)        
@@ -262,6 +277,9 @@ if __name__ == "__main__":
     bst_rand.show()       # -8 -4 -2 2 3 9 18 22 29 30 33 39
     
     print(bst.diameter()) # 2
+
+    print(bst.kth_smallest(3)) #20
+
 
 
     
