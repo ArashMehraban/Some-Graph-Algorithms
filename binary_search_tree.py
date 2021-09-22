@@ -63,6 +63,19 @@ class BST:
                 level = 0 # root level
                 self._show_right(self.root,level,output)
                 self._print2Dlist(output)
+
+            elif view == 'vertical':
+                from collections import defaultdict
+                self.Map = defaultdict(list)
+                self._show_vertical(self.root,0,0)
+                output = []
+                old = float('-inf')
+                for k,v in sorted(self.Map.items()):
+                    if k[0] != old:
+                        output.append([])
+                    output[-1].extend(sorted(v))
+                    old = k[0]
+                self._print2Dlist(output)               
         print()
 
     def _print2Dlist(self,list2d):
@@ -121,7 +134,13 @@ class BST:
                 output += [[]]
                 output[level].append(cur.val)
                 self._show_right(cur.right,level+1,output) # <-- important to call cur.right first
-                self._show_right(cur.left,level+1,output)                     
+                self._show_right(cur.left,level+1,output)
+
+    def _show_vertical(self,cur,r,c):
+        if cur != None:
+            self._show_vertical(cur.left,r-1,c+1)
+            self._show_vertical(cur.right,r+1,c+1)
+            self.Map[(r,c)].append(cur.val)        
             
     def height(self):
         if self.root != None:
@@ -259,6 +278,7 @@ if __name__ == "__main__":
     bst.show(view='zigzag')      # 8 20 7 10 50 16
     bst.show(view='left')        # 8 7
     bst.show(view='right')       # 8 20 50
+    bst.show(view='vertical')    # 7 8 10 20 16 50
     print(bst.height())   # 4
     print(bst.exists(16)) # True
     bst.remove(8)         
