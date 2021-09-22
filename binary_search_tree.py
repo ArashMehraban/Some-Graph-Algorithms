@@ -32,39 +32,45 @@ class BST:
     def show(self,view='inOrder'):
         if self.root != None:
             if view == 'preOrder':
-                self._show_preOrder(self.root)  # root left right  
+                self._show_preOrder(self.root)  # root left right
+                
             elif view == 'inOrder':
-                self._show_inOrder(self.root)   # left root right  
+                self._show_inOrder(self.root)   # left root right
+                
             elif view == 'postOrder':
                 self._show_postOrder(self.root) # left right root
+                
             elif view == 'levelOrder':
-                from collections import defaultdict
-                self.order = defaultdict(list)
+                output = []
                 level = 0 # root level
-                self._show_levelOrder(self.root,level)
-                for level_data in self.order.values():
-                    for val in level_data:
-                        print(val, end =' ')
+                self._show_levelOrder(self.root,level,output)
+                self._print2Dlist(output)
+
             elif view == 'zigzag':
                 output= []
                 level = 0 # root level
                 self._show_zigzag(self.root,level,output)
-                for zigzag_item in output:
-                    for val in zigzag_item:
-                        print(val, end = ' ')
+                self._print2Dlist(output)
+                        
             elif view == 'left':
                 self.left_side = {}
-                height = 0 # root height
-                self._show_leftview(self.root,height)
+                level = 0 # root level
+                self._show_leftview(self.root,level)
                 for val in self.left_side.values():
                     print(val, end =' ')
+                    
             elif view == 'right':
                 self.right_side = {}
-                height = 0 # root height
-                self._show_rightview(self.root,height)
+                level = 0 # root level
+                self._show_rightview(self.root,level)
                 for val in self.right_side.values():
                     print(val, end =' ')
         print()
+
+    def _print2Dlist(self,list2d):
+        for item in list2d:
+            for val in item:
+                print(val, end = ' ')
 
     def _show_preOrder(self,cur):
         if cur != None:
@@ -84,11 +90,14 @@ class BST:
             self._show_postOrder(cur.right)
             print(str(cur.val), end =" ")
 
-    def _show_levelOrder(self,cur,level):
+    def _show_levelOrder(self,cur,level,output):
         if cur != None:
-            self.order[level].append(cur.val)
-            self._show_levelOrder(cur.left,level+1)
-            self._show_levelOrder(cur.right,level+1)
+            if len(output) <= level:
+                output += [[]]
+            #self.order[level].append(cur.val)
+            output[level].append(cur.val)
+            self._show_levelOrder(cur.left,level+1,output)
+            self._show_levelOrder(cur.right,level+1,output)
 
     def _show_zigzag(self,cur,level,output):
         if cur != None:
@@ -101,19 +110,19 @@ class BST:
             else:
                 output[level].insert(0,cur.val) #prepend
 
-    def _show_leftview(self,cur,height):
+    def _show_leftview(self,cur,level):
         if cur != None:
-            if height not in self.left_side:
-                self.left_side[height] = cur.val
-                self._show_leftview(cur.left,height+1) # <-- important to call cur.left first
-                self._show_leftview(cur.right,height+1)
+            if level not in self.left_side:
+                self.left_side[level] = cur.val
+                self._show_leftview(cur.left,level+1) # <-- important to call cur.left first
+                self._show_leftview(cur.right,level+1)
 
-    def _show_rightview(self,cur,height):
+    def _show_rightview(self,cur,level):
         if cur != None:
-            if height not in self.right_side:
-                self.right_side[height] = cur.val
-                self._show_rightview(cur.right,height+1) # <-- important to call cur.right first
-                self._show_rightview(cur.left,height+1)                     
+            if level not in self.right_side:
+                self.right_side[level] = cur.val
+                self._show_rightview(cur.right,level+1) # <-- important to call cur.right first
+                self._show_rightview(cur.left,level+1)                     
             
     def height(self):
         if self.root != None:
