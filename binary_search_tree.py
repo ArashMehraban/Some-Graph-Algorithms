@@ -295,7 +295,18 @@ class BST:
         r = self._max_sum_path(cur.right)
         self.Max = max(self.Max, cur.val, cur.val+l, cur.val+r, cur.val+l+r)
         return max(cur.val, cur.val+l, cur.val+r)
-        
+
+    def copy(self):
+        new_BST = BST()
+        return self._copy(self.root,new_BST)
+
+    def _copy(self,cur,new_BST):
+        if not cur:
+            return None
+        new_BST.insert(cur.val)
+        new_BST.left = self._copy(cur.left,new_BST)
+        new_BST.right = self._copy(cur.right,new_BST)
+        return new_BST     
 
 if __name__ == "__main__":
     bst = BST()               
@@ -338,6 +349,13 @@ if __name__ == "__main__":
     print(bst.lca(10,50))     # 10
     print(bst.lca(8,10))      # None
     print(bst.max_sum_path()) # 86
+
+    bst.show()                # 10 16 20 50
+    bst_copy = bst.copy()     
+    bst_copy.show()           # 10 16 20 50
+    bst.insert(45)
+    bst.show()                # 10 16 20 45 50
+    bst_copy.show()           # 10 16 20 50    <--bst_copy is not changed when bst is changed
 
 
 
